@@ -33,6 +33,7 @@ def CPT(theData, varC, varP, noStates):
 
     # divide by N(P)
     for i, row in enumerate(cPT.transpose()):
+        # divide by (count the number of states equal to i)
         row /= len(filter(lambda x: x == i, vecP))
 
 # end of coursework 1 task 2
@@ -73,7 +74,16 @@ def JPT2CPT(aJPT):
 def Query(theQuery, naiveBayes): 
     rootPdf = zeros((naiveBayes[0].shape[0]), float)
 # Coursework 1 task 5 should be inserted here
-  
+    prior = naiveBayes[0]
+    CPT = lambda i: naiveBayes[i + 1]
+
+    for i, p in enumerate(rootPdf):
+        rootPdf[i] = prior[i] * CPT(i)[theQuery[i]][i]
+
+    # normalize
+    s = sum(rootPdf)
+    for i, p in enumerate(rootPdf):
+        rootPdf[i] /= s
 
 # end of coursework 1 task 5
     return rootPdf
@@ -235,19 +245,38 @@ def PrincipalComponents(theData):
 #
 noVariables, noRoots, noStates, noDataPoints, datain = ReadFile("Neurones.txt")
 theData = array(datain)
-#AppendString("results.txt","Coursework One Results by dfg")
-#AppendString("results.txt","") #blank line
-#AppendString("results.txt","The prior probability of node 0")
+open("results.txt", 'w').close()
+AppendString("results.txt","Coursework One Results by mlo08")
+AppendString("results.txt","") #blank line
+AppendString("results.txt","The prior probability of node 0")
+
 prior = Prior(theData, 0, noStates)
+AppendList("results.txt", prior)
 print(prior)
-cpt = CPT(theData, 1, 3, noStates)
-print(cpt)
-jpt = JPT(theData, 1, 3, noStates)
-print(jpt)
-jpt2 = JPT2CPT(jpt)
-print(jpt)
-print(jpt2)
-#AppendList("results.txt", prior)
+
+cPT = CPT(theData, 2, 0, noStates)
+AppendArray("results.txt", cPT)
+print(cPT)
+
+jPT = JPT(theData, 2, 0, noStates)
+AppendArray("results.txt", jPT)
+print(jPT)
+
+JPT2CPT(jPT)
+AppendArray("results.txt", jPT)
+print(jPT)
+
+naiveBayes = [prior] + map(lambda c: CPT(theData, c, 0, noStates), range(1,6))
+print(naiveBayes)
+
+dist = Query([4,0,0,0,5], naiveBayes)
+AppendList("results.txt", dist)
+print(dist)
+
+dist = Query([6,5,2,5,5], naiveBayes)
+AppendList("results.txt", dist)
+print(dist)
+
 #
 # continue as described
 #
