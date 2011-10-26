@@ -10,7 +10,11 @@ from numpy import *
 def Prior(theData, root, noStates):
     prior = zeros((noStates[root]), float )
 # Coursework 1 task 1 should be inserted here
-    
+    for val in theData[0:, root]:
+        prior[val] += 1
+    print(prior)
+    prior /= theData.shape[root]
+    print(prior)
 # end of Coursework 1 task 1
     return prior
 # Function to compute a CPT with parent node varP and xchild node varC from the data array
@@ -199,7 +203,7 @@ def PrincipalComponents(theData):
 #
 # main program part for Coursework 1
 #
-noVariables, noRoots, noStates, noDataPoints, datain = ReadFile("Neurones01.txt")
+noVariables, noRoots, noStates, noDataPoints, datain = ReadFile("Neurones.txt")
 theData = array(datain)
 AppendString("results.txt","Coursework One Results by dfg")
 AppendString("results.txt","") #blank line
