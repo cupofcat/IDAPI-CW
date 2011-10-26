@@ -13,9 +13,8 @@ def Prior(theData, root, noStates):
 # Coursework 1 task 1 should be inserted here
     for val in theData[0:, root]:
         prior[val] += 1
-    print(prior)
     prior /= theData.shape[0]
-    print(prior)
+
 # end of Coursework 1 task 1
     return prior
 
@@ -24,23 +23,37 @@ def Prior(theData, root, noStates):
 def CPT(theData, varC, varP, noStates):
     cPT = zeros((noStates[varC], noStates[varP]), float )
 # Coursework 1 task 2 should be inserte4d here
+    # extract only the relevant columns
     vecC = theData[0:, varC]
     vecP = theData[0:, varP]
+
+    # count N(C&P)
     for i in range(theData.shape[0]):
         cPT[vecC[i], vecP[i]] += 1
+
+    # divide by N(P)
+    for i, row in enumerate(cPT.transpose()):
+        row /= len(filter(lambda x: x == i, vecP))
+
 # end of coursework 1 task 2
-    print(cPT)
-    for col in cPT.transpose():
-        col /= sum(col)
-    print(cPT)
-        
     return cPT
 
 # Function to calculate the joint probability table of two variables in the data set
 def JPT(theData, varRow, varCol, noStates):
     jPT = zeros((noStates[varRow], noStates[varCol]), float )
 #Coursework 1 task 3 should be inserted here 
-    
+    # extract only the relevant columns
+    vecRow = theData[0:, varRow]
+    vecCol = theData[0:, varCol]
+
+    # count the number of the occurences of the pairs: N(R&C)
+    for i in range(theData.shape[0]):
+        jPT[vecRow[i], vecCol[i]] += 1
+
+    # divide by number of data points
+    for row in jPT.transpose():
+        row /= theData.shape[0]
+
 # end of coursework 1 task 3
     return jPT
 
@@ -48,7 +61,10 @@ def JPT(theData, varRow, varCol, noStates):
 # Function to convert a joint probability table to a conditional probability table
 def JPT2CPT(aJPT):
 #Coursework 1 task 4 should be inserted here 
-   
+    # normalize the JPT so columns sum to 1
+    for row in aJPT.transpose():
+        row /= sum(row)
+
 # coursework 1 taks 4 ends here
     return aJPT
 
@@ -223,7 +239,14 @@ theData = array(datain)
 #AppendString("results.txt","") #blank line
 #AppendString("results.txt","The prior probability of node 0")
 prior = Prior(theData, 0, noStates)
+print(prior)
 cpt = CPT(theData, 1, 3, noStates)
+print(cpt)
+jpt = JPT(theData, 1, 3, noStates)
+print(jpt)
+jpt2 = JPT2CPT(jpt)
+print(jpt)
+print(jpt2)
 #AppendList("results.txt", prior)
 #
 # continue as described
