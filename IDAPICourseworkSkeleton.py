@@ -75,10 +75,17 @@ def Query(theQuery, naiveBayes):
     rootPdf = zeros((naiveBayes[0].shape[0]), float)
 # Coursework 1 task 5 should be inserted here
     prior = naiveBayes[0]
+    
+    # A function returning the i-th CPT (indexed from 0)
     CPT = lambda i: naiveBayes[i + 1]
 
-    for i, p in enumerate(rootPdf):
-        rootPdf[i] = prior[i] * CPT(i)[theQuery[i]][i]
+    # calculate distribution (without normalizing)
+    for rootState, _ in enumerate(rootPdf):
+        # A function returning P(var | root) from CPT for that var
+        conditionalProbability = lambda var: CPT(var)[theQuery[var], rootState]
+        
+        rootPdf[rootState] = prior[rootState]
+        rootPdf[rootState] *= multiply.reduce(map(conditionalProbability, range(0, len(rootPdf)) ))
 
     # normalize
     s = sum(rootPdf)
