@@ -113,7 +113,7 @@ noVariables, noRoots, noStates, noDataPoints, datain = ReadFile("Neurones.txt")
 theData = array(datain)
 
 log = False
-filename = "IDAPIResults01.txt"
+filename = "Results01.txt"
 
 # Clear the contents of the file
 open(filename, 'w').close()
