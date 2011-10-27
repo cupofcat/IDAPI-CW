@@ -252,36 +252,42 @@ def PrincipalComponents(theData):
 #
 noVariables, noRoots, noStates, noDataPoints, datain = ReadFile("Neurones.txt")
 theData = array(datain)
-open("results.txt", 'w').close()
-AppendString("results.txt","Coursework One Results by mlo08")
-AppendString("results.txt","") #blank line
-AppendString("results.txt","The prior probability of node 0")
+
+filename = "IDAPIResults01.txt"
+
+# Clear the contents of the file
+open(filename, 'w').close()
+
+# Produce the results and write to the file
+AppendString(filename,"Coursework One Results by mlo08")
+AppendString(filename,"") #blank line
+AppendString(filename,"The prior probability of node 0")
 
 prior = Prior(theData, 0, noStates)
-AppendList("results.txt", prior)
+AppendList(filename, prior)
 print(prior)
 
 cPT = CPT(theData, 2, 0, noStates)
-AppendArray("results.txt", cPT)
+AppendArray(filename, cPT)
 print(cPT)
 
 jPT = JPT(theData, 2, 0, noStates)
-AppendArray("results.txt", jPT)
+AppendArray(filename, jPT)
 print(jPT)
 
 JPT2CPT(jPT)
-AppendArray("results.txt", jPT)
+AppendArray(filename, jPT)
 print(jPT)
 
 naiveBayes = [prior] + map(lambda c: CPT(theData, c, 0, noStates), range(1,6))
 print(naiveBayes)
 
 dist = Query([4,0,0,0,5], naiveBayes)
-AppendList("results.txt", dist)
+AppendList(filename, dist)
 print(dist)
 
 dist = Query([6,5,2,5,5], naiveBayes)
-AppendList("results.txt", dist)
+AppendList(filename, dist)
 print(dist)
 
 #
