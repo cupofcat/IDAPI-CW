@@ -96,8 +96,9 @@ def Query(theQuery, naiveBayes):
                                                       range(0, len(rootPdf)) ))
 
     # normalize
+    alpha = sum(rootPdf)
     for i, p in enumerate(rootPdf):
-        rootPdf[i] /= sum(rootPdf)
+        rootPdf[i] /= alpha
 
 # end of coursework 1 task 5
     return rootPdf
