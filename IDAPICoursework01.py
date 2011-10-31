@@ -89,10 +89,10 @@ def Query(theQuery, naiveBayes):
     # calculate distribution (without normalizing)
     for rootState, _ in enumerate(rootPdf):
         # A function returning P(var | root) from the CPT for that var
-        conditionalProbability = lambda var: CPT(var)[theQuery[var], rootState]
+        ConditionalProbability = lambda var: CPT(var)[theQuery[var], rootState]
 
         rootPdf[rootState] = prior[rootState]
-        rootPdf[rootState] *= multiply.reduce(map(conditionalProbability,
+        rootPdf[rootState] *= multiply.reduce(map(ConditionalProbability,
                                                       range(0, len(rootPdf)) ))
 
     # normalize
