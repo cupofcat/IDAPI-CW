@@ -93,7 +93,7 @@ def Query(theQuery, naiveBayes):
 
         rootPdf[rootState] = prior[rootState]
         rootPdf[rootState] *= multiply.reduce(map(ConditionalProbability,
-                                                      range(0, len(rootPdf)) ))
+                                                      range(0, len(theQuery)) ))
 
     # normalize
     alpha = sum(rootPdf)
