@@ -152,21 +152,51 @@ def Cw1Main(log):
 #  Coursework 2 begins here  #
 ##############################
 
+def memoize(f):
+    cache = {}
+    def memoizedF(*args):
+        if args not in cache:
+            cache[args] = f(*args)
+        return cache[args]
+    return memoizedF
+
+def divide(a, b):
+    if a == 0:
+        return 0
+    return a/b
+
 # Calculate the mutual information from the joint probability table of two
 # variables
 def MutualInformation(jP):
     mi=0.0
 # Coursework 2 task 1 should be inserted here
+    def log2(x):
+        if x == 0:
+            return 0
+        return math.log(x, 2)
 
+    @memoize
+    def PCol(col):
+        return sum(jP[0:, col])
+    
+    @memoize
+    def PRow(row):
+        return sum(jP[row])
+
+    for row in range(jP.shape[0]):
+        for col in range(jP.shape[1]):
+            mi += jP[row][col] * log2(divide(jP[row][col], (PCol(col) * PRow(row))) )
 # end of coursework 2 task 1
     return mi
 
 
 # Constructs a dependency matrix for all the variables
-def DependencyMatrix(theData, noVariables):
+def DependencyMatrix(theData, noVariables, noStates):
     MIMatrix = zeros((noVariables,noVariables))
 # Coursework 2 task 2 should be inserted here
-
+    for row in range(MIMatrix.shape[0]):
+        for col in range(MIMatrix.shape[1]):
+            MIMatrix[row][col] = MutualInformation(JPT(theData, row, col, noStates))
 # end of coursework 2 task 2
     return MIMatrix
 
@@ -175,9 +205,12 @@ def DependencyMatrix(theData, noVariables):
 def DependencyList(depMatrix):
     depList=[]
 # Coursework 2 task 3 should be inserted here
-
+    for row in range(depMatrix.shape[0]):
+        for col in range(depMatrix.shape[1]):
+            depList.append([depMatrix[row, col], row, col])
+    depList.sort(key = lambda arc: arc[0], reverse=True)
 # end of coursework 2 task 3
-    return array(depList2)
+    return array(depList)
 
 
 # Functions implementing the spanning tree algorithm
@@ -192,16 +225,33 @@ def SpanningTreeAlgorithm(depList, noVariables):
 # End of coursework 2
 #
 def Cw2Main(log):
+    noVariables, noRoots, noStates, noDataPoints, datain = ReadFile("Neurones.txt")
+    theData = array(datain)
+
     filename = "Results02.txt"
 
     # Clear the contents of the file
-    open(filename, 'w').close()
+    #open(filename, 'w').close()
 
     # Produce the results and write to the file
-    AppendString(filename,"Coursework Two Results by mlo08")
-    AppendString(filename,"") #blank line
+    #AppendString(filename,"Coursework Two Results by mlo08")
+    #AppendString(filename,"") #blank line
+
+    jPT = JPT(theData, 0, 0, noStates)
+    if (log) : print(jPT)
+
+    mI = MutualInformation(jPT)
+    if (log) : print(mI)
+
+    dM = DependencyMatrix(theData, noVariables, noStates)
+    if (log) : print(dM)
+
+    dL = DependencyList(dM)
+    if (log) : print(dL)
+
+    #print(DependencyMatrix(theData, noVariables, noStates))
 
 #
 # main program part for Coursework 1
 #
-Cw1Main(True)
+Cw2Main(True)
