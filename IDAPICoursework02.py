@@ -205,8 +205,8 @@ def DependencyMatrix(theData, noVariables, noStates):
 def DependencyList(depMatrix):
     depList=[]
 # Coursework 2 task 3 should be inserted here
-    for row in range(depMatrix.shape[0]):
-        for col in range(depMatrix.shape[1]):
+    for col in range(depMatrix.shape[1]):
+        for row in range(col, depMatrix.shape[0]):
             depList.append([depMatrix[row, col], row, col])
     depList.sort(key = lambda arc: arc[0], reverse=True)
 # end of coursework 2 task 3
@@ -217,7 +217,15 @@ def DependencyList(depMatrix):
 def SpanningTreeAlgorithm(depList, noVariables):
     spanningTree = []
 # Coursework 2 task 4 should be inserted here
+    def HasCycle(tree):
 
+
+    arcNum = 0
+    while len(spanningTree) < noVariables - 1:
+        arc = depList[arcNum]
+        if not HasCycle(spanningTree + arc):
+            spanningTee.append(arc)
+        arcNum += 1
 # end of coursework 2 task 4
     return array(spanningTree)
 
