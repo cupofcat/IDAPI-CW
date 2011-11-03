@@ -214,44 +214,57 @@ def DependencyList(depMatrix):
 
 
 # Functions implementing the spanning tree algorithm
+# It implements the Kruskal's algorithm for finding maximum spanning tree,
+# using python sets
 def SpanningTreeAlgorithm(depList, noVariables):
     spanningTree = []
 # Coursework 2 task 4 should be inserted here
-    # A forest of trees (i.e. a collection of clusters) in Kruskal's algorithm
-    trees = []
-    def AddsCycle(arc):
-        print ("trees: %s, arc: %s", trees, arc)
-        # all the clusters (0-2) that the arc has at least one common vertex with
-        candidateTrees = [tree for tree in trees if len(tree.intersection(arc)) > 0]
 
-        # add new equivalence class (i.e. new cluster)
-        if len(candidateTrees) == 0:
-            trees.append(arc)
+    # A a collection of clusters (i.e. a forest of trees) in Kruskal's
+    # algorithm
+    clusters = []
+
+    def AddsCycle(edge):
+        # all the clusters that the edge has at least one common vertex with
+        # (the size of this list is between 0 and 2)
+        candidateClusters = [[cluster, size] \
+                                for cluster in clusters \
+                                for size in [len(cluster.intersection(edge))] \
+                                if size > 0]
+        Cluster = lambda cls: cls[0]
+        Size    = lambda cls: cls[1]
+
+        # if the list is empty -> add new equivalence class (i.e. new cluster)
+        if not candidateClusters:
+            clusters.append(edge)
             return False
-        
-        # merge two clusters
-        if len(candidateTrees) == 2:
-            candidateTrees[0].update(candidateTrees[1])
-            trees.remove(candidateTrees[1])
+
+        clusterOne = candidateClusters[0]
+
+        # if the edge belongs to two clusters -> merge them together
+        if len(candidateClusters) == 2:
+            clusterTwo = candidateClusters[1]
+            Cluster(clusterOne).update(Cluster(clusterTwo))
+            clusters.remove(Cluster(clusterTwo))
             return False
-        
-        # both vertices of the arc are already in the same cluster - a loop!
-        if len(candidateTrees[0].intersection(arc)) == 2:
+
+        # both vertices of the edge are already in the same cluster -> a loop!
+        if Size(clusterOne) == 2:
             return True
 
-        # just one vertex in one cluster - add an edge (a vertex) to this cluster
-        candidateTrees[0].update(arc)
+        # just one vertex in one cluster -> add a vertex to this cluster
+        Cluster(clusterOne).update(edge)
         return False
-                
 
-    arcNum = 0
-    while len(spanningTree) < noVariables - 1:
-        arc = depList[arcNum]
-        arcNum += 1
-        if arc[1] == arc[2]:
-            continue
-        if not AddsCycle(set(arc[1:])):
-            spanningTree.append(arc)
+    # Main loop of Kruskal's algorithm. We greedily add edges to the graph
+    # if they don't add a cycle (a loop) until we have a spanning tree.
+    for edge in depList:
+        if edge[1] == edge[2]: continue
+        if len(spanningTree) == noVariables - 1: break
+
+        if not AddsCycle(set(edge[1:])):
+            spanningTree.append(edge)
+
 # end of coursework 2 task 4
     return array(spanningTree)
 
@@ -259,7 +272,7 @@ def SpanningTreeAlgorithm(depList, noVariables):
 # End of coursework 2
 #
 def Cw2Main(log):
-    noVariables, noRoots, noStates, noDataPoints, datain = ReadFile("Neurones.txt")
+    noVariables, noRoots, noStates, noDataPoints, datain = ReadFile("HepatitisC.txt")
     theData = array(datain)
 
     filename = "Results02.txt"
