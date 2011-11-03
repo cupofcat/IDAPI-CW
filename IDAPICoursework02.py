@@ -217,15 +217,41 @@ def DependencyList(depMatrix):
 def SpanningTreeAlgorithm(depList, noVariables):
     spanningTree = []
 # Coursework 2 task 4 should be inserted here
-    def HasCycle(tree):
+    # A forest of trees (i.e. a collection of clusters) in Kruskal's algorithm
+    trees = []
+    def AddsCycle(arc):
+        print ("trees: %s, arc: %s", trees, arc)
+        # all the clusters (0-2) that the arc has at least one common vertex with
+        candidateTrees = [tree for tree in trees if len(tree.intersection(arc)) > 0]
 
+        # add new equivalence class (i.e. new cluster)
+        if len(candidateTrees) == 0:
+            trees.append(arc)
+            return False
+        
+        # merge two clusters
+        if len(candidateTrees) == 2:
+            candidateTrees[0].update(candidateTrees[1])
+            trees.remove(candidateTrees[1])
+            return False
+        
+        # both vertices of the arc are already in the same cluster - a loop!
+        if len(candidateTrees[0].intersection(arc)) == 2:
+            return True
+
+        # just one vertex in one cluster - add an edge (a vertex) to this cluster
+        candidateTrees[0].update(arc)
+        return False
+                
 
     arcNum = 0
     while len(spanningTree) < noVariables - 1:
         arc = depList[arcNum]
-        if not HasCycle(spanningTree + arc):
-            spanningTee.append(arc)
         arcNum += 1
+        if arc[1] == arc[2]:
+            continue
+        if not AddsCycle(set(arc[1:])):
+            spanningTree.append(arc)
 # end of coursework 2 task 4
     return array(spanningTree)
 
@@ -256,6 +282,9 @@ def Cw2Main(log):
 
     dL = DependencyList(dM)
     if (log) : print(dL)
+
+    sTA = SpanningTreeAlgorithm(dL, noVariables)
+    if (log) : print(sTA)
 
     #print(DependencyMatrix(theData, noVariables, noStates))
 
