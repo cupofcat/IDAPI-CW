@@ -3,9 +3,10 @@
 # Coursework in Python 
 from IDAPICourseworkLibrary import *
 from numpy import *
-#
-# Coursework 1 begins here
-#
+
+##############################
+#  Coursework 1 begins here  #
+##############################
 
 # PLEASE NOTE: The code was optimized for readability, rather than absolute
 #              efficency.
@@ -152,6 +153,9 @@ def Cw1Main(log):
 #  Coursework 2 begins here  #
 ##############################
 
+# PLEASE NOTE: The code was sometimes optimized for readability, rather than
+#              absolute efficency.
+
 def memoize(f):
     cache = {}
     def memoizedF(*args):
@@ -186,6 +190,10 @@ def MutualInformation(jP):
     for row in range(jP.shape[0]):
         for col in range(jP.shape[1]):
             mi += jP[row][col] * log2(divide(jP[row][col], (PCol(col) * PRow(row))) )
+    #mi = sum([jP[row][col] * log2(jP[row][col] / (PCol(col) * PRow(row))) \
+    #            for row in range(jP.shape[0]) \
+    #            for col in range(jP.shape[1]) \
+    #            if jP[row][col] != 0])
 # end of coursework 2 task 1
     return mi
 
@@ -196,7 +204,8 @@ def DependencyMatrix(theData, noVariables, noStates):
 # Coursework 2 task 2 should be inserted here
     for row in range(MIMatrix.shape[0]):
         for col in range(MIMatrix.shape[1]):
-            MIMatrix[row][col] = MutualInformation(JPT(theData, row, col, noStates))
+            MIMatrix[row][col]
+                    = MutualInformation(JPT(theData, row, col, noStates))
 # end of coursework 2 task 2
     return MIMatrix
 
@@ -208,6 +217,9 @@ def DependencyList(depMatrix):
     for col in range(depMatrix.shape[1]):
         for row in range(col, depMatrix.shape[0]):
             depList.append([depMatrix[row, col], row, col])
+    #depList = [ [depMatrix[row, col], row, col] \
+    #                for col in range(depMatrix.shape[1]) \
+    #                for row in range(col, depMatrix.shape[0]) ]
     depList.sort(key = lambda arc: arc[0], reverse=True)
 # end of coursework 2 task 3
     return array(depList)
@@ -257,8 +269,9 @@ def SpanningTreeAlgorithm(depList, noVariables):
         VerticesOf(clusterOne).update(edgeVertices)
         return False
 
-    # Main loop of Kruskal's algorithm. We greedily add edges to the graph
-    # if they don't add a cycle (a loop) until we have a spanning tree.
+    # Main loop of Kruskal's algorithm. We greedily add edges (but not self
+    # loops) to the graph if they don't add a cycle (a loop) until we have a
+    # spanning tree.
     for edge in depList:
         if edge[1] == edge[2]: continue
         if len(spanningTree) == noVariables - 1: break
@@ -273,17 +286,19 @@ def SpanningTreeAlgorithm(depList, noVariables):
 # End of coursework 2
 #
 def Cw2Main(log):
-    noVariables, noRoots, noStates, noDataPoints, datain = ReadFile("HepatitisC.txt")
+    noVariables, noRoots, noStates, noDataPoints, datain \
+            = ReadFile("HepatitisC.txt")
+
     theData = array(datain)
 
     filename = "Results02.txt"
 
     # Clear the contents of the file
-    #open(filename, 'w').close()
+    open(filename, 'w').close()
 
     # Produce the results and write to the file
-    #AppendString(filename,"Coursework Two Results by mlo08")
-    #AppendString(filename,"") #blank line
+    AppendString(filename,"Coursework Two Results by mlo08")
+    AppendString(filename,"") #blank line
 
     jPT = JPT(theData, 0, 0, noStates)
     if (log) : print(jPT)
@@ -293,16 +308,17 @@ def Cw2Main(log):
 
     dM = DependencyMatrix(theData, noVariables, noStates)
     if (log) : print(dM)
+    AppendArray(filename, dM)
 
     dL = DependencyList(dM)
     if (log) : print(dL)
+    AppendList(filename, dL)
 
     sTA = SpanningTreeAlgorithm(dL, noVariables)
     if (log) : print(sTA)
-
-    #print(DependencyMatrix(theData, noVariables, noStates))
+    AppendList(filename, sTA)
 
 #
-# main program part for Coursework 1
+# main program part for Coursework 2
 #
 Cw2Main(True)
