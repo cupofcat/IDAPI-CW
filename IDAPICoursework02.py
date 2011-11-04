@@ -222,21 +222,22 @@ def SpanningTreeAlgorithm(depList, noVariables):
 
     # A a collection of clusters (i.e. a forest of trees) in Kruskal's
     # algorithm
-    clusters = []
+    verticesClusters = []
 
-    def AddsCycle(edge):
+    def AddsCycle(edgeVertices):
         # all the clusters that the edge has at least one common vertex with
         # (the size of this list is between 0 and 2)
-        candidateClusters = [[cluster, size] \
-                                for cluster in clusters \
-                                for size in [len(cluster.intersection(edge))] \
-                                if size > 0]
-        Cluster = lambda cls: cls[0]
-        Size    = lambda cls: cls[1]
+        candidateClusters
+            = [[cluster, size] \
+                    for cluster in verticesClusters \
+                    for size in [len(cluster.intersection(edgeVertices))] \
+                    if size > 0]
+        VerticesOf             = lambda cls: cls[0]
+        NumberOfEdgeVerticesIn = lambda cls: cls[1]
 
         # if the list is empty -> add new equivalence class (i.e. new cluster)
         if not candidateClusters:
-            clusters.append(edge)
+            verticesClusters.append(edgeVertices)
             return False
 
         clusterOne = candidateClusters[0]
@@ -244,16 +245,16 @@ def SpanningTreeAlgorithm(depList, noVariables):
         # if the edge belongs to two clusters -> merge them together
         if len(candidateClusters) == 2:
             clusterTwo = candidateClusters[1]
-            Cluster(clusterOne).update(Cluster(clusterTwo))
-            clusters.remove(Cluster(clusterTwo))
+            VerticesOf(clusterOne).update(VerticesOf(clusterTwo))
+            verticesClusters.remove(VerticesOf(clusterTwo))
             return False
 
         # both vertices of the edge are already in the same cluster -> a loop!
-        if Size(clusterOne) == 2:
+        if NumberOfEdgeVerticesIn(clusterOne) == 2:
             return True
 
         # just one vertex in one cluster -> add a vertex to this cluster
-        Cluster(clusterOne).update(edge)
+        VerticesOf(clusterOne).update(edgeVertices)
         return False
 
     # Main loop of Kruskal's algorithm. We greedily add edges to the graph
