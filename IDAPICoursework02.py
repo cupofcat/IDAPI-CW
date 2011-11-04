@@ -187,13 +187,16 @@ def MutualInformation(jP):
     def PRow(row):
         return sum(jP[row])
 
+    '''
     for row in range(jP.shape[0]):
         for col in range(jP.shape[1]):
             mi += jP[row][col] * log2(divide(jP[row][col], (PCol(col) * PRow(row))) )
-    #mi = sum([jP[row][col] * log2(jP[row][col] / (PCol(col) * PRow(row))) \
-    #            for row in range(jP.shape[0]) \
-    #            for col in range(jP.shape[1]) \
-    #            if jP[row][col] != 0])
+    '''
+    mi = sum([jP[row][col] * log2(jP[row][col] / (PCol(col) * PRow(row))) \
+                for row in range(jP.shape[0]) \
+                for col in range(jP.shape[1]) \
+                if jP[row][col] != 0])
+    ''''''
 # end of coursework 2 task 1
     return mi
 
@@ -204,8 +207,7 @@ def DependencyMatrix(theData, noVariables, noStates):
 # Coursework 2 task 2 should be inserted here
     for row in range(MIMatrix.shape[0]):
         for col in range(MIMatrix.shape[1]):
-            MIMatrix[row][col]
-                    = MutualInformation(JPT(theData, row, col, noStates))
+            MIMatrix[row][col] = MutualInformation(JPT(theData, row, col, noStates))
 # end of coursework 2 task 2
     return MIMatrix
 
@@ -214,12 +216,15 @@ def DependencyMatrix(theData, noVariables, noStates):
 def DependencyList(depMatrix):
     depList=[]
 # Coursework 2 task 3 should be inserted here
+    '''
     for col in range(depMatrix.shape[1]):
         for row in range(col, depMatrix.shape[0]):
             depList.append([depMatrix[row, col], row, col])
-    #depList = [ [depMatrix[row, col], row, col] \
-    #                for col in range(depMatrix.shape[1]) \
-    #                for row in range(col, depMatrix.shape[0]) ]
+    '''
+    depList = [ [depMatrix[row, col], row, col] \
+                    for col in range(depMatrix.shape[1]) \
+                    for row in range(col, depMatrix.shape[0]) ]
+    ''''''
     depList.sort(key = lambda arc: arc[0], reverse=True)
 # end of coursework 2 task 3
     return array(depList)
@@ -231,7 +236,7 @@ def DependencyList(depMatrix):
 def SpanningTreeAlgorithm(depList, noVariables):
     spanningTree = []
 # Coursework 2 task 4 should be inserted here
-
+    
     # A a collection of clusters (i.e. a forest of trees) in Kruskal's
     # algorithm
     verticesClusters = []
@@ -239,7 +244,7 @@ def SpanningTreeAlgorithm(depList, noVariables):
     def AddsCycle(edgeVertices):
         # all the clusters that the edge has at least one common vertex with
         # (the size of this list is between 0 and 2)
-        candidateClusters
+        candidateClusters \
             = [[cluster, size] \
                     for cluster in verticesClusters \
                     for size in [len(cluster.intersection(edgeVertices))] \
@@ -279,6 +284,20 @@ def SpanningTreeAlgorithm(depList, noVariables):
         if not AddsCycle(set(edge[1:])):
             spanningTree.append(edge)
 
+    '''
+    # initialize each vertice to be in its own cluster
+    clusterOfVertice = dict([[float(v), v] for v in range(noVariables)])
+
+    for edge in depList:
+        print clusterOfVertice
+        if len(spanningTree) == noVariables - 1: break
+
+        if clusterOfVertice[edge[1]] != clusterOfVertice[edge[2]]:
+            spanningTree.append(edge)
+            # BUG: update all the keys where value == edge[1]
+            clusterOfVertice[edge[1]] = clusterOfVertice[edge[2]]
+    '''
+
 # end of coursework 2 task 4
     return array(spanningTree)
 
@@ -300,23 +319,25 @@ def Cw2Main(log):
     AppendString(filename,"Coursework Two Results by mlo08")
     AppendString(filename,"") #blank line
 
-    jPT = JPT(theData, 0, 0, noStates)
-    if (log) : print(jPT)
-
-    mI = MutualInformation(jPT)
-    if (log) : print(mI)
-
     dM = DependencyMatrix(theData, noVariables, noStates)
-    if (log) : print(dM)
+    if (log) :
+        print "Dependency Matrix:"
+        print(dM)
+        print ""
     AppendArray(filename, dM)
 
     dL = DependencyList(dM)
-    if (log) : print(dL)
-    AppendList(filename, dL)
+    if (log) :
+        print "Dependency List:"
+        print(dL)
+        print ""
+    AppendArray(filename, dL)
 
     sTA = SpanningTreeAlgorithm(dL, noVariables)
-    if (log) : print(sTA)
-    AppendList(filename, sTA)
+    if (log) :
+        print "Maximum Spanning Tree:"
+        print(sTA)
+    AppendArray(filename, sTA)
 
 #
 # main program part for Coursework 2
