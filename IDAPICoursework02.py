@@ -164,11 +164,6 @@ def memoize(f):
         return cache[args]
     return memoizedF
 
-def divide(a, b):
-    if a == 0:
-        return 0
-    return a/b
-
 # Calculate the mutual information from the joint probability table of two
 # variables
 def MutualInformation(jP):
@@ -187,16 +182,10 @@ def MutualInformation(jP):
     def PRow(row):
         return sum(jP[row])
 
-    '''
-    for row in range(jP.shape[0]):
-        for col in range(jP.shape[1]):
-            mi += jP[row][col] * log2(divide(jP[row][col], (PCol(col) * PRow(row))) )
-    '''
     mi = sum([jP[row][col] * log2(jP[row][col] / (PCol(col) * PRow(row))) \
                 for row in range(jP.shape[0]) \
                 for col in range(jP.shape[1]) \
                 if jP[row][col] != 0])
-    ''''''
 # end of coursework 2 task 1
     return mi
 
@@ -216,15 +205,9 @@ def DependencyMatrix(theData, noVariables, noStates):
 def DependencyList(depMatrix):
     depList=[]
 # Coursework 2 task 3 should be inserted here
-    '''
-    for col in range(depMatrix.shape[1]):
-        for row in range(col, depMatrix.shape[0]):
-            depList.append([depMatrix[row, col], row, col])
-    '''
     depList = [ [depMatrix[row, col], row, col] \
                     for col in range(depMatrix.shape[1]) \
                     for row in range(col, depMatrix.shape[0]) ]
-    ''''''
     depList.sort(key = lambda arc: arc[0], reverse=True)
 # end of coursework 2 task 3
     return array(depList)
@@ -284,20 +267,6 @@ def SpanningTreeAlgorithm(depList, noVariables):
         if not AddsCycle(set(edge[1:])):
             spanningTree.append(edge)
 
-    '''
-    # initialize each vertice to be in its own cluster
-    clusterOfVertice = dict([[float(v), v] for v in range(noVariables)])
-
-    for edge in depList:
-        print clusterOfVertice
-        if len(spanningTree) == noVariables - 1: break
-
-        if clusterOfVertice[edge[1]] != clusterOfVertice[edge[2]]:
-            spanningTree.append(edge)
-            # BUG: update all the keys where value == edge[1]
-            clusterOfVertice[edge[1]] = clusterOfVertice[edge[2]]
-    '''
-
 # end of coursework 2 task 4
     return array(spanningTree)
 
@@ -305,8 +274,9 @@ def SpanningTreeAlgorithm(depList, noVariables):
 # End of coursework 2
 #
 def Cw2Main(log):
+    inputFile = "HepatitisC.txt"
     noVariables, noRoots, noStates, noDataPoints, datain \
-            = ReadFile("HepatitisC.txt")
+            = ReadFile(inputFile)
 
     theData = array(datain)
 
@@ -320,23 +290,29 @@ def Cw2Main(log):
     AppendString(filename,"") #blank line
 
     dM = DependencyMatrix(theData, noVariables, noStates)
+    headline = "Dependency Matrix for " + inputFile + ": "
     if (log) :
-        print "Dependency Matrix:"
+        print headline
         print(dM)
         print ""
+    AppendString(filename, headline)
     AppendArray(filename, dM)
 
     dL = DependencyList(dM)
+    headline = "Dependency List for " + inputFile + ": "
     if (log) :
-        print "Dependency List:"
+        print headline
         print(dL)
         print ""
+    AppendString(filename, headline)
     AppendArray(filename, dL)
 
     sTA = SpanningTreeAlgorithm(dL, noVariables)
+    headline = "Maximum Spanning Tree for " + inputFile + ": "
     if (log) :
-        print "Maximum Spanning Tree:"
+        print headline
         print(sTA)
+    AppendString(filename, headline)
     AppendArray(filename, sTA)
 
 #

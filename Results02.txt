@@ -1,5 +1,6 @@
 Coursework Two Results by mlo08
 
+Dependency Matrix for HepatitisC.txt: 
  1.530  0.045  0.026  0.048  0.034  0.024  0.039  0.086  0.016 
  0.045  2.372  0.009  0.060  0.069  0.030  0.071  0.083  0.003 
  0.026  0.009  0.992  0.012  0.007  0.002  0.007  0.005  0.001 
@@ -11,6 +12,7 @@ Coursework Two Results by mlo08
  0.016  0.003  0.001  0.006  0.008  0.016  0.004  0.032  0.754 
 
 
+Dependency List for HepatitisC.txt: 
  2.629  6.000  6.000 
  2.411  4.000  4.000 
  2.372  1.000  1.000 
@@ -58,6 +60,7 @@ Coursework Two Results by mlo08
  0.001  8.000  2.000 
 
 
+Maximum Spanning Tree for HepatitisC.txt: 
  0.606  5.000  4.000 
  0.539  4.000  3.000 
  0.086  7.000  0.000 
