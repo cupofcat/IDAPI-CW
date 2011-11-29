@@ -4,6 +4,7 @@
 from IDAPICourseworkLibrary import *
 from numpy import *
 import copy
+import sys
 
 ##############################
 #  Coursework 1 begins here  #
@@ -424,24 +425,6 @@ def MDLSize(arcList, cptList, noDataPoints, noStates):
     mdlSize *= math.log(noDataPoints, 2) / 2;
 # Coursework 3 task 3 ends here 
     return mdlSize 
-
-# Function to calculate the joint probability of a single data point
-# in a Network
-def JointProbabilityB(dataPoint, arcList, cptList):
-    jP = 1.0
-# Coursework 3 task 4 begins here
-    for (index, arcs) in enumerate(arcList):
-        cpt = cptList[index]
-        noNodes = len(arcs)
-        ind = zeros(noNodes)
-        for i in range(noNodes):
-            node = arcs[i]
-            state = dataPoint[node]
-            ind[i] = state
-        prob = cpt[tuple(ind)]
-        jP *= prob
-# Coursework 3 task 4 ends here 
-    return jP
 
 # Function to calculate the joint probability of a single data point
 # in a Network
