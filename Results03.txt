@@ -1,0 +1,13 @@
+Coursework Three Results by mlo08
+
+MDL size for HepatitisC.txt: 
+3972.430238
+
+MDL accuracy for HepatitisC.txt: 
+-23672.1810271
+
+MDL score for HepatitisC.txt: 
+27644.6112651
+
+Best network score for HepatitisC.txt: 
+28400.5552951

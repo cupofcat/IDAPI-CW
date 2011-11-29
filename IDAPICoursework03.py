@@ -494,7 +494,7 @@ def FindBestNetwork(theData, noDataPoints, noStates, arcList):
             mDLScore = \
                     MDLScore(theData, noDataPoints, noStates, arcList, cptList)
 
-            if (mDLScore > bestMDLScore):
+            if ((-1) * mDLScore < bestMDLScore):
                 bestMDLScore = mDLScore
                 bestArcList  = copy.deepcopy(arcList)
                 bestCPTList  = cptList
@@ -564,6 +564,7 @@ def Cw3Main(log):
         print ""
     AppendString(filename, headline)
     AppendString(filename, bestMDLScore)
+    AppendArray(bestArcList)
 
 # main program part for Coursework 3
 #
