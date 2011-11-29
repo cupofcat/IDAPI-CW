@@ -564,7 +564,7 @@ def Cw3Main(log):
         print ""
     AppendString(filename, headline)
     AppendString(filename, bestMDLScore)
-    AppendArray(filename, bestArcList)
+    AppendString(filename, str(bestArcList))
 
 # main program part for Coursework 3
 #
