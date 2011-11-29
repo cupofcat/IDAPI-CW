@@ -482,7 +482,7 @@ def MDLScore2(mDLSize, mDLAccuracy):
 # Function to find the best scoring network formed by deleting one arc
 # from the spanning tree
 def FindBestNetwork(theData, noDataPoints, noStates, arcList):
-    bestMDLScore = 0.0;
+    bestMDLScore = sys.maxint;
     bestArcList  = []
     bestCPTList  = []
 
@@ -494,7 +494,7 @@ def FindBestNetwork(theData, noDataPoints, noStates, arcList):
             mDLScore = \
                     MDLScore(theData, noDataPoints, noStates, arcList, cptList)
 
-            if ((-1) * mDLScore < bestMDLScore):
+            if (mDLScore < bestMDLScore):
                 bestMDLScore = mDLScore
                 bestArcList  = copy.deepcopy(arcList)
                 bestCPTList  = cptList
