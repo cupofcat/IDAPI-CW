@@ -10,4 +10,5 @@ MDL score for HepatitisC.txt:
 27644.6112651
 
 Best network score for HepatitisC.txt: 
-28400.5552951
+25916.7016818
+[[0], [1], [2, 0], [3, 4], [4, 1], [5, 4], [6, 1], [7, 0], [8, 7]]
