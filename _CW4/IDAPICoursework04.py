@@ -15,13 +15,13 @@ from numpy import *
 # Calculates the mean vector of the data set
 #
 def Mean(theData):
-    return numpy.mean(theData.astype(float), 0)
+    return numpy.mean(theData, axis = 0)
 
 #
 # Calculates the covariance matrix of the data set
 #
 def Covariance(theData):
-    return numpy.cov(theData.astype(float), rowvar = 0)
+    return numpy.cov(theData, rowvar = 0)
 
 #
 # Creates eigenfaces' files from the basis
@@ -38,9 +38,7 @@ def CreateEigenfaceFiles(theBasis, fileNamePrefix):
 # Projects an image file onto the PCA space
 #
 def ProjectFace(theBasis, theMean, theFaceImage):
-    face = array(ReadOneImage(theFaceImage))
-    meanFace = face - theMean
-    return array(dot(meanFace, transpose(theBasis)))
+    return array(dot(theFaceImage - theMean, theBasis.T))
 
 #
 # Reconstructs the image from PCA space, saving all the
@@ -94,7 +92,7 @@ def Cw4Main(log):
     noVariables, noRoots, noStates, noDataPoints, datain \
             = ReadFile(inputFile)
 
-    theData = array(datain)
+    theData = array(datain, float)
 
     filename = "IDAPIResults04.txt"
 
@@ -127,9 +125,9 @@ def Cw4Main(log):
 
     # Given
 
-    givenBasis = ReadEigenfaceBasis()
-    givenMean = array(ReadOneImage("MeanImage.jpg"))
-    givenMags = ProjectFace(givenBasis, givenMean, "c.pgm")
+    givenBasis = ReadEigenfaceBasis().astype(float)
+    givenMean = array(ReadOneImage("MeanImage.jpg"), float)
+    givenMags = ProjectFace(givenBasis, givenMean, array(ReadOneImage("c.pgm"), float))
 
     headline = "Components magnitudes for c.pgm: "
     if (log) :
@@ -157,10 +155,10 @@ def Cw4Main(log):
     
     # 4.6 Calculations
 
-    images = array(ReadImages())
+    images  = array(ReadImages())
     afBasis = PrincipalComponents(images)
-    afMean = Mean(images)
-    afMags = ProjectFace(afBasis, afMean, "c.pgm")
+    afMean  = Mean(images)
+    afMags  = ProjectFace(afBasis, afMean, array(ReadOneImage("c.pgm"), float))
 
     afEigenFaces = CreateEigenfaceFiles(afBasis, "AFEigenFace")
     headline = "A-F eigenfaces:"
